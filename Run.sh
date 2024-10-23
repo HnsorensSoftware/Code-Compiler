@@ -1,2 +1,2 @@
-gcc Main.c -o program_compiler
+gcc Main.c Lexer.c -o program_compiler -Wall
 ./program_compiler

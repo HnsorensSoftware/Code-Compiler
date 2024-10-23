@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+
+
 // Macro for begining the token declaration stage
 #define BEGIN_TOKEN_DECLARATION() \
 typedef enum \
@@ -22,8 +24,9 @@ void define_tokens() \
 #define END_TOKEN_DEFINITION() \
 } \
 \
-const char* get_token_string(TokenType token) { \
-    return words[token]; \
+const char* get_token_string(Token token) { \
+    if (token.type >= TOKEN_COUNT) return token.value; \
+    return words[token.type]; \
 }
 
 // Macro for defining a token
@@ -31,3 +34,54 @@ const char* get_token_string(TokenType token) { \
 
 // Macro for setting all tokens (run in main)
 #define INIT_TOKENS() define_tokens();
+
+// Token count for the 'word' array
+#define TOKEN_COUNT 15
+
+
+// Token Declaration
+BEGIN_TOKEN_DECLARATION()
+
+// Standard Keywords
+DECLARE(INT32)
+DECLARE(BOOL)
+DECLARE(RETURN)
+DECLARE(PLUS)
+DECLARE(MINUS)
+DECLARE(DIVIDE)
+DECLARE(EQUAL)
+DECLARE(GREATER)
+DECLARE(LESS)
+DECLARE(SEMICOLON)
+DECLARE(COMMA)
+DECLARE(OPEN_PAREN)
+DECLARE(CLOSE_PAREN)
+DECLARE(OPEN_BRACK)
+DECLARE(CLOSE_BRACK)
+
+// Literals (will not be defined)
+DECLARE(IDENTIFIER)
+DECLARE(NUMBER_LITERAL)
+END_TOKEN_DECLARATION()
+
+
+
+typedef struct Token
+{
+    TokenType type;
+    char* value;
+    int line;
+    int column;
+} Token;
+
+typedef struct LexerPosition
+{
+    int position;
+    int line;
+    int lineBegin;
+} LexerPosition;
+
+void define_tokens();
+const char* get_token_string(Token token);
+struct LexerPosition create_lexer_position();
+Token next_token(const char* source, struct LexerPosition* position);
