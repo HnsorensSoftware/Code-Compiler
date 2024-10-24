@@ -210,3 +210,8 @@ void print_tokens(struct TokenBatch* batch)
         printf("Token%i: %s\n", i, get_token_string(batch->tokens[i]));
     }
 }
+
+void cleanup_batch(struct TokenBatch* batch)
+{
+    free(batch->tokens);
+}

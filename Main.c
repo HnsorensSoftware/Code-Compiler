@@ -10,5 +10,11 @@ int main()
     struct TokenBatch batch = parse_tokens(source);
     print_tokens(&batch);
 
+
+
+
+
+    cleanup_batch(&batch);
+
     return 0;
 }

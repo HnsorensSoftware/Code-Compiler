@@ -99,3 +99,4 @@ struct TokenBatch create_token_batch();
 void add_token(TokenBatch* batch, Token token);
 struct TokenBatch parse_tokens(const char* source);
 void print_tokens(struct TokenBatch* batch);
+void cleanup_batch(struct TokenBatch* batch);
