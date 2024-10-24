@@ -53,7 +53,7 @@ struct Token next_token(const char* source, struct LexerPosition* position)
         if (start_char == '\n')
         {
             position->line ++;
-            position->lineBegin = POSITION(1);
+            position->line_begin = POSITION(1);
         }
         
         // increment to the next character
@@ -61,7 +61,7 @@ struct Token next_token(const char* source, struct LexerPosition* position)
         start_char = source[POSITION(0)];
     }
 
-    int current_column = position->position - position->lineBegin;
+    int current_column = position->position - position->line_begin;
 
     /* ******************** Create Word ********************* */
 
@@ -162,7 +162,51 @@ struct LexerPosition create_lexer_position()
     LexerPosition position;
     position.position = 0;
     position.line = 0;
-    position.lineBegin = 0;
+    position.line_begin = 0;
 
     return position;
+}
+
+struct TokenBatch create_token_batch()
+{
+    struct TokenBatch batch;
+    batch.token_count = 0;
+    batch.token_capacity = 256;
+    batch.tokens = (Token*)malloc(sizeof(struct Token) * batch.token_capacity);
+
+    return batch;
+}
+
+void add_token(struct TokenBatch* batch, struct Token token)
+{
+    if (batch->token_count == batch->token_capacity)
+    {
+        batch->token_capacity += 256;
+        batch->tokens = (Token*)realloc(batch->tokens, sizeof(Token) * batch->token_capacity);
+    }
+
+    batch->tokens[batch->token_count] = token;
+    batch->token_count++;
+}
+
+struct TokenBatch parse_tokens(const char* source)
+{
+    struct TokenBatch batch = create_token_batch();
+    struct LexerPosition position = create_lexer_position();
+
+    while (source[position.position] != '\0')
+    {
+        struct Token token = next_token(source, &position);
+        add_token(&batch, token);
+    }
+
+    return batch;
+}
+
+void print_tokens(struct TokenBatch* batch)
+{
+    for (int i = 0; i < batch->token_count; i++)
+    {
+        printf("Token%i: %s\n", i, get_token_string(batch->tokens[i]));
+    }
 }

@@ -78,10 +78,24 @@ typedef struct LexerPosition
 {
     int position;
     int line;
-    int lineBegin;
+    int line_begin;
 } LexerPosition;
+
+typedef struct TokenBatch
+{
+    struct Token* tokens;
+
+    int token_count;
+    int token_capacity;
+} TokenBatch;
+
 
 void define_tokens();
 const char* get_token_string(Token token);
 struct LexerPosition create_lexer_position();
 Token next_token(const char* source, struct LexerPosition* position);
+struct LexerPosition create_lexer_position();
+struct TokenBatch create_token_batch();
+void add_token(TokenBatch* batch, Token token);
+struct TokenBatch parse_tokens(const char* source);
+void print_tokens(struct TokenBatch* batch);
